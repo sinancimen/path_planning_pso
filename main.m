@@ -29,5 +29,17 @@ for i=1:num_drones
         vmax = V1 - (V1 - V2)*j/max_iter;
         [particles(:,i), velocities(:,i)] = generate_new_particles(particles(:,i), velocities(:,i), pbest_path(:,i), gbest_path(i),w, c1, c2, vmax);
         cost(:,i) = calculate_fitness(particles(:,i), mountains, gbest_path(1:i-1), num_segments, d_safe);
+        for k = 1:swarm_size
+            if cost(k,i) < pbest_cost(k,i)
+                pbest_cost(k,i) = cost(k,i);
+                pbest_path(k,i) = particles(k,i);
+            end
+            if cost(k,i) < gbest_cost(i)
+                gbest_cost(i) = cost(k,i);
+                gbest_path(i) = particles(k,i);
+            end
+        end
+        [particles(:,i), velocities(:,i), pbest_cost(:,i), pbest_path(:,i), cost(:,i)] = sort_particles(particles(:,i), velocities(:,i), cost(:,i), pbest_cost(:,i), pbest_path(:,i));
+        [particles(:,i), velocities(:,i)] = execute_mutation(particles(:,i), velocities(:,i));
     end
 end
