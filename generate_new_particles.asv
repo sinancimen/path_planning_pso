@@ -1,0 +1,7 @@
+function [new_particles, velocities] = generate_new_particles(particles, velocities, pbest_path, gbest_path, w, c1, c2)
+    swarm_size = size(particles);
+    for i = 1 : swarm_size(1)
+        velocities(i) = mat2w * cell2mat(velocities(i)) + c1 * rand * (cell2mat(pbest_path(i)) - cell2mat(particles(i))) + c2 * rand * (cell2mat(gbest_path) - cell2mat(particles(i)));
+        new_particles(i) = mat2cell(cell2mat(particles(i)) + velocities(i));
+    end
+end

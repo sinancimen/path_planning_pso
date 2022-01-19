@@ -1,0 +1,19 @@
+run("params.m");
+
+particles = cell(swarm_size, num_drones);
+
+for i=1:num_drones
+    particles(:,i) = logistic_map(initial_pos_drones(:,i), goal_pos_drones(:,i), swarm_size, dimension, mu, xmax, ymax, zmax);
+end
+
+for j=1:num_drones
+    for i=1:swarm_size
+        cost(i,j) = mountain_terrain_cost(cell2mat(particles(i,j)), mountains, num_segments);
+        cost(i,j) = cost(i,j) + path_length_cost(cell2mat(particles(i,j)));
+    end
+    pbest_cost(:,j) = cost(:,j);
+    pbest_path(:,j) = particles(:,j);
+    [min_cost, min_index] = min(cost(:,j)); 
+    gbest_cost(j) = cost(min_cost,j);
+    gbest_path(j) = particles(min_index,);
+end

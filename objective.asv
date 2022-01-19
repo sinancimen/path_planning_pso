@@ -1,0 +1,27 @@
+function [outputArg1,outputArg2] = untitled(inputArg1,inputArg2)
+%UNTITLED Summary of this function goes here
+%   Detailed explanation goes here
+outputArg1 = inputArg1;
+outputArg2 = inputArg2;
+end
+
+function cost = path_length_cost(path)
+    sum = 0;
+    for i = 2 : size(path)
+        sum = sum + sqrt((path(1,i) - path(1,i-1))^2 + (path(2,i) - path(2,i-1))^2 + (path(3,i) - path(3,i-1)));
+    end
+    shortest_length = sqrt((path(1, end) - path(1, 1))^2 + (path(2, end) - path(2,1))^2 + (path(3,end) - path(3,1))^2);
+    cost = sum/shortest_length;
+end
+
+function cost = mountain_terrain_cost(path, obstacles, num_parts)
+    for i = 2: size(path)
+        for j = 1 : num_parts
+            X = (path(:,i)-path(:,i-1)) .* j ./ num_parts + path(:, i-1);
+            for k = 1: size(obstacles)
+                mountain_model(obstacles(1, k), obstacles(2,k), obstacles(3,k), obstacles(4,k), obstacles(5,k), )
+            end
+        end
+    end
+
+end
