@@ -10,7 +10,7 @@ function cost = collision_cost(path, other_paths, num_parts,safe_distance)
             for k = 1 : size_other_paths(2)
                 for n = 1 : path_size_2
                     X_other = X_other_list(:,n+path_size_2*(k-1));
-                    distance = sqrt((X(1)-X_other(1))^2 + (X(2)-X_other(2))^2 + X(3)-X_other(3));
+                    distance = sqrt((X(1)-X_other(1))^2 + (X(2)-X_other(2))^2 + (X(3)-X_other(3))^2);
                     if (distance<safe_distance)
                         cost = cost + 1;
                     end
