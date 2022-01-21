@@ -9,34 +9,35 @@ function particles = logistic_map(initial_pos, goal_pos, num_particles, num_part
    new_particle = true;
    path = [];
    particles = cell(num_particles,1);
+
    for i = 1:num_particles
-       for j = 1 : num_parts
-            if initialized == false
-                last_y = initial_y;
-                last_z = initial_z;
-                path(2,j) = last_y;
-                path(3,j) = last_z;
-                initialized = true;
-                new_particle = false;
-            elseif new_particle == true
-                path(2,j) = initial_y;
-                path(3,j) = initial_z;
-                new_particle = false;
+       for j = 2 : num_parts
+            if (initialized == false)
+                last_y(j) = initial_y + (j-1) / (num_parts) * (goal_y - initial_y);
+                last_z(j) = initial_z + (j-1) / (num_parts) * (goal_z - initial_z);
+                path(2,j) = last_y(j);
+                path(3,j) = last_z(j);
+                path(1,j) = (j-1)/num_parts;
+                if (j == num_parts)
+                    initialized = true;
+                end
             else
-                last_y = mu * last_y * (1 - last_y);
-                last_z = mu * last_z * (1 - last_z);
-                path(2,j) = last_y;
-                path(3,j) = last_z;
+                last_y(j) = mu * last_y(j) * (1 - last_y(j));
+                last_z(j) = mu * last_z(j) * (1 - last_z(j));
+                path(2,j) = last_y(j);
+                path(3,j) = last_z(j);
+                path(1,j) = (j-1)/num_parts;
             end
-            path(1,j) = (j-1)/num_parts;
        end
+       path(1,1) = 0;
        path(1,num_parts+1) = goal_x / x;
        path(2,num_parts+1) = goal_y;
        path(3,num_parts+1) = goal_z;
+       path(2,1) = initial_y;
+       path(3,1) = initial_z;
        path(1,:) = (goal_x - initial_x) * path(1,:) + initial_x;
        path(2,:) = y * path(2,:);
        path(3,:) = z * path(3,:);
        particles(i,1) = mat2cell(path(:,:), 3, num_parts+1);
-       new_particle = true;
    end
 end

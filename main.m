@@ -15,7 +15,7 @@ for j=1:num_drones
     pbest_cost(:,j) = cost(:,j);
     pbest_path(:,j) = particles(:,j);
     [min_cost, min_index] = min(cost(:,j)); 
-    gbest_cost(j) = min_cost;
+    gbest_cost(j) = 999;
     gbest_path(j) = particles(min_index, j);
 end
 
@@ -45,3 +45,29 @@ for i=1:num_drones
         [particles(:,i), velocities(:,i)] = execute_mutation(particles(:,i), velocities(:,i), alpha);
     end
 end
+
+%% Plotting
+
+[X,Y] = meshgrid(0:0.1:xmax, 0:ymax);
+mountain_size = size(X);
+for i = 1:mountain_size(1)
+    for j = 1:mountain_size(2)
+        Z1(i,j) = mountain_model(mountains(1,1), mountains(2,1), mountains(3,1), mountains(4,1), mountains(5,1), X(i,j), Y(i,j));
+        Z2(i,j) = mountain_model(mountains(1,2), mountains(2,2), mountains(3,2), mountains(4,2), mountains(5,2), X(i,j), Y(i,j));
+    end
+end
+surf (X,Y,Z1)
+hold on;
+ylim([0 ymax]);
+xlim([0 xmax]);
+zlim([0 zmax]);
+view(3);
+PositionConstraint = 'outerposition';
+ztickformat('%g');
+ZAxis.Exponent = 0;
+surf (X,Y,Z2)
+for i = 1:num_drones
+    path = cell2mat(gbest_path(i));
+    line(path(1,:),path(2,:),path(3,:), 'Color', rand(1,3), 'LineStyle', '--', 'LineWidth', 2.5)
+end
+hold off;
