@@ -1,5 +1,7 @@
 run("params.m");
 
+%% Initialize swarm
+
 particles = cell(swarm_size, num_drones);
 
 for i=1:num_drones
@@ -21,6 +23,8 @@ end
 
 velocities = cell(size(particles));
 velocities(:,:) = mat2cell(zeros(3,41),3 ,41);
+
+%% Main Loop
 
 for i=1:num_drones
     for j = 1:max_iter
@@ -66,7 +70,7 @@ PositionConstraint = 'outerposition';
 ztickformat('%g');
 ZAxis.Exponent = 0;
 surf (X,Y,Z2)
-for i = 1:num_drones
+for i = 1:3
     path = cell2mat(gbest_path(i));
     line(path(1,:),path(2,:),path(3,:), 'Color', rand(1,3), 'LineStyle', '--', 'LineWidth', 2.5)
 end

@@ -6,26 +6,27 @@ function particles = logistic_map(initial_pos, goal_pos, num_particles, num_part
    goal_y = goal_pos(2)/y;
    goal_z = goal_pos(3)/z;
    initialized = false;
-   new_particle = true;
    path = [];
    particles = cell(num_particles,1);
 
    for i = 1:num_particles
        for j = 2 : num_parts
             if (initialized == false)
-                last_y(j) = initial_y + (j-1) / (num_parts) * (goal_y - initial_y);
-                last_z(j) = initial_z + (j-1) / (num_parts) * (goal_z - initial_z);
-                path(2,j) = last_y(j);
-                path(3,j) = last_z(j);
+                shortest_path_y(j) = initial_y + (j-1) / (num_parts) * (goal_y - initial_y);
+                shortest_path_z(j) = initial_z + (j-1) / (num_parts) * (goal_z - initial_z);
+                path(2,j) = shortest_path_y(j);
+                path(3,j) = shortest_path_z(j);
                 path(1,j) = (j-1)/num_parts;
+                last_y(j) = rand;
+                last_z(j) = rand;
                 if (j == num_parts)
                     initialized = true;
                 end
             else
                 last_y(j) = mu * last_y(j) * (1 - last_y(j));
                 last_z(j) = mu * last_z(j) * (1 - last_z(j));
-                path(2,j) = last_y(j);
-                path(3,j) = last_z(j);
+                path(2,j) = shortest_path_y(j) + (last_y(j) - 0.5) * 0.2;
+                path(3,j) = shortest_path_z(j) + (last_z(j) - 0.5) * 0.1;
                 path(1,j) = (j-1)/num_parts;
             end
        end
