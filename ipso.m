@@ -1,12 +1,17 @@
-run("params_cipso.m");
+run("params_ipso.m");
 
 %% Initialize swarm
 
 particles = cell(swarm_size, num_drones);
+all_particles = cell(swarm_size * 50, num_drones);
 
 for i=1:num_drones
-    particles(:,i) = logistic_map(initial_pos_drones(:,i), goal_pos_drones(:,i), swarm_size, dimension, mu, xmax, ymax, zmax);
+    all_particles(:,i) = logistic_map(initial_pos_drones(:,i), goal_pos_drones(:,i), swarm_size * 50, dimension, mu, xmax, ymax, zmax);
 end
+
+particles = all_particles(1:swarm_size,:);
+trails = zeros(swarm_size, num_drones);
+last_index_taken = swarm_size + 1;
 
 for j=1:num_drones
     for i=1:swarm_size
@@ -22,7 +27,7 @@ for j=1:num_drones
 end
 
 velocities = cell(size(particles));
-velocities(:,:) = mat2cell(zeros(3,41),3 ,41);
+velocities(:,:) = mat2cell(zeros(3,dimension+1),3 ,dimension+1);
 
 %% Main Loop
 
@@ -39,14 +44,22 @@ for i=1:num_drones
             if cost(k,i) < pbest_cost(k,i)
                 pbest_cost(k,i) = cost(k,i);
                 pbest_path(k,i) = particles(k,i);
+                trails(k,i) = 0;
+            else
+                trails(k,i) = trails(k,i) + 1;
             end
             if cost(k,i) < gbest_cost(i)
                 gbest_cost(i) = cost(k,i);
                 gbest_path(i) = particles(k,i);
             end
+            
+            if (trails(k,i) > trail_limit)
+                particles(k,i) = all_particles(last_index_taken,i);
+                trails(k,i) = 0;
+                last_index_taken = last_index_taken + 1;
+            end
         end
-        [particles(:,i), velocities(:,i), pbest_cost(:,i), pbest_path(:,i), cost(:,i)] = sort_particles(particles(:,i), velocities(:,i), cost(:,i), pbest_cost(:,i), pbest_path(:,i));
-        [particles(:,i), velocities(:,i)] = execute_mutation(particles(:,i), velocities(:,i), alpha);
+        
     end
 end
 
@@ -70,8 +83,8 @@ PositionConstraint = 'outerposition';
 ztickformat('%g');
 ZAxis.Exponent = 0;
 surf (X,Y,Z2)
-for i = 1:3
+for i = 1:2
     path = cell2mat(gbest_path(i));
-    line(path(1,:),path(2,:),path(3,:), 'Color', rand(1,3), 'LineStyle', '--', 'LineWidth', 2.5)
+    line(path(1,:),path(2,:),path(3,:), 'Color', rand(1,3), 'LineStyle', '-', 'LineWidth', 2.5)
 end
 hold off;

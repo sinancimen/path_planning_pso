@@ -25,8 +25,8 @@ function particles = logistic_map(initial_pos, goal_pos, num_particles, num_part
             else
                 last_y(j) = mu * last_y(j) * (1 - last_y(j));
                 last_z(j) = mu * last_z(j) * (1 - last_z(j));
-                path(2,j) = shortest_path_y(j) + (last_y(j) - 0.5) * 0.2;
-                path(3,j) = shortest_path_z(j) + (last_z(j) - 0.5) * 0.1;
+                path(2,j) = shortest_path_y(j) + (last_y(j) - 0.5) * 0.4;
+                path(3,j) = shortest_path_z(j) + (last_z(j) - 0.5) * 0.3;
                 path(1,j) = (j-1)/num_parts;
             end
        end
